@@ -1,0 +1,29 @@
+# OpenLane / OpenROAD run output
+runs/
+flow/openlane/runs/
+*.gds
+*.lef
+*.def
+*.sdf
+*.spef
+*.lib
+
+# synthesis / sim intermediates
+*.blif
+*.json.gz
+netlist/
+*.vcd
+*.fst
+a.out
+
+# sv2v output
+gen/
+
+# Python
+__pycache__/
+*.pyc
+
+# generated golden-model reference and RTL-dump artifacts
+*.mem
+*.meta
+model/*.png
