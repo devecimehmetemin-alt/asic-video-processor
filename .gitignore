@@ -30,3 +30,7 @@ model/*.png
 
 # generated LUT paste source (content lives in rtl/gamma.sv)
 model/gamma_lut.txt
+
+# golden test vectors are source, not artifacts: they define correct output
+!model/asic_in.mem
+!model/asic_ref.mem
