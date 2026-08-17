@@ -1,0 +1,14 @@
+{
+  "design__instance__count__class:sequential_cell": 1183,
+  "design__instance__area": 73292.8,
+  "design__die__area": 157116,
+  "design__instance__utilization": 0.510199,
+  "route__drc_errors": 0,
+  "magic__drc_error__count": 0,
+  "klayout__drc_error__count": 0,
+  "design__lvs_error__count": 0,
+  "timing__setup__wns": 0,
+  "timing__hold__wns": 0,
+  "timing__setup_vio__count": 0,
+  "timing__hold_vio__count": 0
+}
