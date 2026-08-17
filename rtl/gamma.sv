@@ -11,40 +11,267 @@ module gamma (
     // Gamma = 2.2
     // Formula: output = round((input / 255.0) ** (1.0 / 2.2) * 255.0)
 
-(* rom_style = "distributed" *) logic [7:0] GAMMA_LUT [0:255] = '{
-        8'h00, 8'h15, 8'h1C, 8'h22, 8'h27, 8'h2B, 8'h2E, 8'h32,
-        8'h35, 8'h38, 8'h3B, 8'h3D, 8'h40, 8'h42, 8'h44, 8'h46,
-        8'h48, 8'h4A, 8'h4C, 8'h4E, 8'h50, 8'h52, 8'h54, 8'h55,
-        8'h57, 8'h59, 8'h5A, 8'h5C, 8'h5D, 8'h5F, 8'h60, 8'h62,
-        8'h63, 8'h65, 8'h66, 8'h67, 8'h69, 8'h6A, 8'h6B, 8'h6D,
-        8'h6E, 8'h6F, 8'h70, 8'h72, 8'h73, 8'h74, 8'h75, 8'h76,
-        8'h77, 8'h78, 8'h7A, 8'h7B, 8'h7C, 8'h7D, 8'h7E, 8'h7F,
-        8'h80, 8'h81, 8'h82, 8'h83, 8'h84, 8'h85, 8'h86, 8'h87,
-        8'h88, 8'h89, 8'h8A, 8'h8B, 8'h8C, 8'h8D, 8'h8E, 8'h8F,
-        8'h90, 8'h90, 8'h91, 8'h92, 8'h93, 8'h94, 8'h95, 8'h96,
-        8'h97, 8'h97, 8'h98, 8'h99, 8'h9A, 8'h9B, 8'h9C, 8'h9C,
-        8'h9D, 8'h9E, 8'h9F, 8'hA0, 8'hA0, 8'hA1, 8'hA2, 8'hA3,
-        8'hA4, 8'hA4, 8'hA5, 8'hA6, 8'hA7, 8'hA7, 8'hA8, 8'hA9,
-        8'hAA, 8'hAA, 8'hAB, 8'hAC, 8'hAD, 8'hAD, 8'hAE, 8'hAF,
-        8'hAF, 8'hB0, 8'hB1, 8'hB2, 8'hB2, 8'hB3, 8'hB4, 8'hB4,
-        8'hB5, 8'hB6, 8'hB6, 8'hB7, 8'hB8, 8'hB8, 8'hB9, 8'hBA,
-        8'hBA, 8'hBB, 8'hBC, 8'hBC, 8'hBD, 8'hBE, 8'hBE, 8'hBF,
-        8'hC0, 8'hC0, 8'hC1, 8'hC2, 8'hC2, 8'hC3, 8'hC3, 8'hC4,
-        8'hC5, 8'hC5, 8'hC6, 8'hC7, 8'hC7, 8'hC8, 8'hC8, 8'hC9,
-        8'hCA, 8'hCA, 8'hCB, 8'hCB, 8'hCC, 8'hCD, 8'hCD, 8'hCE,
-        8'hCE, 8'hCF, 8'hCF, 8'hD0, 8'hD1, 8'hD1, 8'hD2, 8'hD2,
-        8'hD3, 8'hD4, 8'hD4, 8'hD5, 8'hD5, 8'hD6, 8'hD6, 8'hD7,
-        8'hD7, 8'hD8, 8'hD9, 8'hD9, 8'hDA, 8'hDA, 8'hDB, 8'hDB,
-        8'hDC, 8'hDC, 8'hDD, 8'hDD, 8'hDE, 8'hDF, 8'hDF, 8'hE0,
-        8'hE0, 8'hE1, 8'hE1, 8'hE2, 8'hE2, 8'hE3, 8'hE3, 8'hE4,
-        8'hE4, 8'hE5, 8'hE5, 8'hE6, 8'hE6, 8'hE7, 8'hE7, 8'hE8,
-        8'hE8, 8'hE9, 8'hE9, 8'hEA, 8'hEA, 8'hEB, 8'hEB, 8'hEC,
-        8'hEC, 8'hED, 8'hED, 8'hEE, 8'hEE, 8'hEF, 8'hEF, 8'hF0,
-        8'hF0, 8'hF1, 8'hF1, 8'hF2, 8'hF2, 8'hF3, 8'hF3, 8'hF4,
-        8'hF4, 8'hF5, 8'hF5, 8'hF6, 8'hF6, 8'hF7, 8'hF7, 8'hF8,
-        8'hF8, 8'hF9, 8'hF9, 8'hF9, 8'hFA, 8'hFA, 8'hFB, 8'hFB,
-        8'hFC, 8'hFC, 8'hFD, 8'hFD, 8'hFE, 8'hFE, 8'hFF, 8'hFF
-    };
+    function automatic logic [7:0] gamma_lut(input logic [7:0] x);
+        case (x)
+            8'h00: gamma_lut = 8'h00;
+            8'h01: gamma_lut = 8'h15;
+            8'h02: gamma_lut = 8'h1C;
+            8'h03: gamma_lut = 8'h22;
+            8'h04: gamma_lut = 8'h27;
+            8'h05: gamma_lut = 8'h2B;
+            8'h06: gamma_lut = 8'h2E;
+            8'h07: gamma_lut = 8'h32;
+            8'h08: gamma_lut = 8'h35;
+            8'h09: gamma_lut = 8'h38;
+            8'h0A: gamma_lut = 8'h3B;
+            8'h0B: gamma_lut = 8'h3D;
+            8'h0C: gamma_lut = 8'h40;
+            8'h0D: gamma_lut = 8'h42;
+            8'h0E: gamma_lut = 8'h44;
+            8'h0F: gamma_lut = 8'h46;
+            8'h10: gamma_lut = 8'h48;
+            8'h11: gamma_lut = 8'h4A;
+            8'h12: gamma_lut = 8'h4C;
+            8'h13: gamma_lut = 8'h4E;
+            8'h14: gamma_lut = 8'h50;
+            8'h15: gamma_lut = 8'h52;
+            8'h16: gamma_lut = 8'h54;
+            8'h17: gamma_lut = 8'h55;
+            8'h18: gamma_lut = 8'h57;
+            8'h19: gamma_lut = 8'h59;
+            8'h1A: gamma_lut = 8'h5A;
+            8'h1B: gamma_lut = 8'h5C;
+            8'h1C: gamma_lut = 8'h5D;
+            8'h1D: gamma_lut = 8'h5F;
+            8'h1E: gamma_lut = 8'h60;
+            8'h1F: gamma_lut = 8'h62;
+            8'h20: gamma_lut = 8'h63;
+            8'h21: gamma_lut = 8'h65;
+            8'h22: gamma_lut = 8'h66;
+            8'h23: gamma_lut = 8'h67;
+            8'h24: gamma_lut = 8'h69;
+            8'h25: gamma_lut = 8'h6A;
+            8'h26: gamma_lut = 8'h6B;
+            8'h27: gamma_lut = 8'h6D;
+            8'h28: gamma_lut = 8'h6E;
+            8'h29: gamma_lut = 8'h6F;
+            8'h2A: gamma_lut = 8'h70;
+            8'h2B: gamma_lut = 8'h72;
+            8'h2C: gamma_lut = 8'h73;
+            8'h2D: gamma_lut = 8'h74;
+            8'h2E: gamma_lut = 8'h75;
+            8'h2F: gamma_lut = 8'h76;
+            8'h30: gamma_lut = 8'h77;
+            8'h31: gamma_lut = 8'h78;
+            8'h32: gamma_lut = 8'h7A;
+            8'h33: gamma_lut = 8'h7B;
+            8'h34: gamma_lut = 8'h7C;
+            8'h35: gamma_lut = 8'h7D;
+            8'h36: gamma_lut = 8'h7E;
+            8'h37: gamma_lut = 8'h7F;
+            8'h38: gamma_lut = 8'h80;
+            8'h39: gamma_lut = 8'h81;
+            8'h3A: gamma_lut = 8'h82;
+            8'h3B: gamma_lut = 8'h83;
+            8'h3C: gamma_lut = 8'h84;
+            8'h3D: gamma_lut = 8'h85;
+            8'h3E: gamma_lut = 8'h86;
+            8'h3F: gamma_lut = 8'h87;
+            8'h40: gamma_lut = 8'h88;
+            8'h41: gamma_lut = 8'h89;
+            8'h42: gamma_lut = 8'h8A;
+            8'h43: gamma_lut = 8'h8B;
+            8'h44: gamma_lut = 8'h8C;
+            8'h45: gamma_lut = 8'h8D;
+            8'h46: gamma_lut = 8'h8E;
+            8'h47: gamma_lut = 8'h8F;
+            8'h48: gamma_lut = 8'h90;
+            8'h49: gamma_lut = 8'h90;
+            8'h4A: gamma_lut = 8'h91;
+            8'h4B: gamma_lut = 8'h92;
+            8'h4C: gamma_lut = 8'h93;
+            8'h4D: gamma_lut = 8'h94;
+            8'h4E: gamma_lut = 8'h95;
+            8'h4F: gamma_lut = 8'h96;
+            8'h50: gamma_lut = 8'h97;
+            8'h51: gamma_lut = 8'h97;
+            8'h52: gamma_lut = 8'h98;
+            8'h53: gamma_lut = 8'h99;
+            8'h54: gamma_lut = 8'h9A;
+            8'h55: gamma_lut = 8'h9B;
+            8'h56: gamma_lut = 8'h9C;
+            8'h57: gamma_lut = 8'h9C;
+            8'h58: gamma_lut = 8'h9D;
+            8'h59: gamma_lut = 8'h9E;
+            8'h5A: gamma_lut = 8'h9F;
+            8'h5B: gamma_lut = 8'hA0;
+            8'h5C: gamma_lut = 8'hA0;
+            8'h5D: gamma_lut = 8'hA1;
+            8'h5E: gamma_lut = 8'hA2;
+            8'h5F: gamma_lut = 8'hA3;
+            8'h60: gamma_lut = 8'hA4;
+            8'h61: gamma_lut = 8'hA4;
+            8'h62: gamma_lut = 8'hA5;
+            8'h63: gamma_lut = 8'hA6;
+            8'h64: gamma_lut = 8'hA7;
+            8'h65: gamma_lut = 8'hA7;
+            8'h66: gamma_lut = 8'hA8;
+            8'h67: gamma_lut = 8'hA9;
+            8'h68: gamma_lut = 8'hAA;
+            8'h69: gamma_lut = 8'hAA;
+            8'h6A: gamma_lut = 8'hAB;
+            8'h6B: gamma_lut = 8'hAC;
+            8'h6C: gamma_lut = 8'hAD;
+            8'h6D: gamma_lut = 8'hAD;
+            8'h6E: gamma_lut = 8'hAE;
+            8'h6F: gamma_lut = 8'hAF;
+            8'h70: gamma_lut = 8'hAF;
+            8'h71: gamma_lut = 8'hB0;
+            8'h72: gamma_lut = 8'hB1;
+            8'h73: gamma_lut = 8'hB2;
+            8'h74: gamma_lut = 8'hB2;
+            8'h75: gamma_lut = 8'hB3;
+            8'h76: gamma_lut = 8'hB4;
+            8'h77: gamma_lut = 8'hB4;
+            8'h78: gamma_lut = 8'hB5;
+            8'h79: gamma_lut = 8'hB6;
+            8'h7A: gamma_lut = 8'hB6;
+            8'h7B: gamma_lut = 8'hB7;
+            8'h7C: gamma_lut = 8'hB8;
+            8'h7D: gamma_lut = 8'hB8;
+            8'h7E: gamma_lut = 8'hB9;
+            8'h7F: gamma_lut = 8'hBA;
+            8'h80: gamma_lut = 8'hBA;
+            8'h81: gamma_lut = 8'hBB;
+            8'h82: gamma_lut = 8'hBC;
+            8'h83: gamma_lut = 8'hBC;
+            8'h84: gamma_lut = 8'hBD;
+            8'h85: gamma_lut = 8'hBE;
+            8'h86: gamma_lut = 8'hBE;
+            8'h87: gamma_lut = 8'hBF;
+            8'h88: gamma_lut = 8'hC0;
+            8'h89: gamma_lut = 8'hC0;
+            8'h8A: gamma_lut = 8'hC1;
+            8'h8B: gamma_lut = 8'hC2;
+            8'h8C: gamma_lut = 8'hC2;
+            8'h8D: gamma_lut = 8'hC3;
+            8'h8E: gamma_lut = 8'hC3;
+            8'h8F: gamma_lut = 8'hC4;
+            8'h90: gamma_lut = 8'hC5;
+            8'h91: gamma_lut = 8'hC5;
+            8'h92: gamma_lut = 8'hC6;
+            8'h93: gamma_lut = 8'hC7;
+            8'h94: gamma_lut = 8'hC7;
+            8'h95: gamma_lut = 8'hC8;
+            8'h96: gamma_lut = 8'hC8;
+            8'h97: gamma_lut = 8'hC9;
+            8'h98: gamma_lut = 8'hCA;
+            8'h99: gamma_lut = 8'hCA;
+            8'h9A: gamma_lut = 8'hCB;
+            8'h9B: gamma_lut = 8'hCB;
+            8'h9C: gamma_lut = 8'hCC;
+            8'h9D: gamma_lut = 8'hCD;
+            8'h9E: gamma_lut = 8'hCD;
+            8'h9F: gamma_lut = 8'hCE;
+            8'hA0: gamma_lut = 8'hCE;
+            8'hA1: gamma_lut = 8'hCF;
+            8'hA2: gamma_lut = 8'hCF;
+            8'hA3: gamma_lut = 8'hD0;
+            8'hA4: gamma_lut = 8'hD1;
+            8'hA5: gamma_lut = 8'hD1;
+            8'hA6: gamma_lut = 8'hD2;
+            8'hA7: gamma_lut = 8'hD2;
+            8'hA8: gamma_lut = 8'hD3;
+            8'hA9: gamma_lut = 8'hD4;
+            8'hAA: gamma_lut = 8'hD4;
+            8'hAB: gamma_lut = 8'hD5;
+            8'hAC: gamma_lut = 8'hD5;
+            8'hAD: gamma_lut = 8'hD6;
+            8'hAE: gamma_lut = 8'hD6;
+            8'hAF: gamma_lut = 8'hD7;
+            8'hB0: gamma_lut = 8'hD7;
+            8'hB1: gamma_lut = 8'hD8;
+            8'hB2: gamma_lut = 8'hD9;
+            8'hB3: gamma_lut = 8'hD9;
+            8'hB4: gamma_lut = 8'hDA;
+            8'hB5: gamma_lut = 8'hDA;
+            8'hB6: gamma_lut = 8'hDB;
+            8'hB7: gamma_lut = 8'hDB;
+            8'hB8: gamma_lut = 8'hDC;
+            8'hB9: gamma_lut = 8'hDC;
+            8'hBA: gamma_lut = 8'hDD;
+            8'hBB: gamma_lut = 8'hDD;
+            8'hBC: gamma_lut = 8'hDE;
+            8'hBD: gamma_lut = 8'hDF;
+            8'hBE: gamma_lut = 8'hDF;
+            8'hBF: gamma_lut = 8'hE0;
+            8'hC0: gamma_lut = 8'hE0;
+            8'hC1: gamma_lut = 8'hE1;
+            8'hC2: gamma_lut = 8'hE1;
+            8'hC3: gamma_lut = 8'hE2;
+            8'hC4: gamma_lut = 8'hE2;
+            8'hC5: gamma_lut = 8'hE3;
+            8'hC6: gamma_lut = 8'hE3;
+            8'hC7: gamma_lut = 8'hE4;
+            8'hC8: gamma_lut = 8'hE4;
+            8'hC9: gamma_lut = 8'hE5;
+            8'hCA: gamma_lut = 8'hE5;
+            8'hCB: gamma_lut = 8'hE6;
+            8'hCC: gamma_lut = 8'hE6;
+            8'hCD: gamma_lut = 8'hE7;
+            8'hCE: gamma_lut = 8'hE7;
+            8'hCF: gamma_lut = 8'hE8;
+            8'hD0: gamma_lut = 8'hE8;
+            8'hD1: gamma_lut = 8'hE9;
+            8'hD2: gamma_lut = 8'hE9;
+            8'hD3: gamma_lut = 8'hEA;
+            8'hD4: gamma_lut = 8'hEA;
+            8'hD5: gamma_lut = 8'hEB;
+            8'hD6: gamma_lut = 8'hEB;
+            8'hD7: gamma_lut = 8'hEC;
+            8'hD8: gamma_lut = 8'hEC;
+            8'hD9: gamma_lut = 8'hED;
+            8'hDA: gamma_lut = 8'hED;
+            8'hDB: gamma_lut = 8'hEE;
+            8'hDC: gamma_lut = 8'hEE;
+            8'hDD: gamma_lut = 8'hEF;
+            8'hDE: gamma_lut = 8'hEF;
+            8'hDF: gamma_lut = 8'hF0;
+            8'hE0: gamma_lut = 8'hF0;
+            8'hE1: gamma_lut = 8'hF1;
+            8'hE2: gamma_lut = 8'hF1;
+            8'hE3: gamma_lut = 8'hF2;
+            8'hE4: gamma_lut = 8'hF2;
+            8'hE5: gamma_lut = 8'hF3;
+            8'hE6: gamma_lut = 8'hF3;
+            8'hE7: gamma_lut = 8'hF4;
+            8'hE8: gamma_lut = 8'hF4;
+            8'hE9: gamma_lut = 8'hF5;
+            8'hEA: gamma_lut = 8'hF5;
+            8'hEB: gamma_lut = 8'hF6;
+            8'hEC: gamma_lut = 8'hF6;
+            8'hED: gamma_lut = 8'hF7;
+            8'hEE: gamma_lut = 8'hF7;
+            8'hEF: gamma_lut = 8'hF8;
+            8'hF0: gamma_lut = 8'hF8;
+            8'hF1: gamma_lut = 8'hF9;
+            8'hF2: gamma_lut = 8'hF9;
+            8'hF3: gamma_lut = 8'hF9;
+            8'hF4: gamma_lut = 8'hFA;
+            8'hF5: gamma_lut = 8'hFA;
+            8'hF6: gamma_lut = 8'hFB;
+            8'hF7: gamma_lut = 8'hFB;
+            8'hF8: gamma_lut = 8'hFC;
+            8'hF9: gamma_lut = 8'hFC;
+            8'hFA: gamma_lut = 8'hFD;
+            8'hFB: gamma_lut = 8'hFD;
+            8'hFC: gamma_lut = 8'hFE;
+            8'hFD: gamma_lut = 8'hFE;
+            8'hFE: gamma_lut = 8'hFF;
+            8'hFF: gamma_lut = 8'hFF;
+            default: gamma_lut = 8'h00;
+        endcase
+    endfunction
 
     // Pipeline registers for video timing/synchronization
     always_ff @(posedge clk) begin
@@ -57,9 +284,9 @@ module gamma (
         else begin
             valid_out <= valid;
             if (valid) begin
-                pix_out[0] <= GAMMA_LUT[pix_in[0]];
-                pix_out[1] <= GAMMA_LUT[pix_in[1]];
-                pix_out[2] <= GAMMA_LUT[pix_in[2]];
+                pix_out[0] <= gamma_lut(pix_in[0]);
+                pix_out[1] <= gamma_lut(pix_in[1]);
+                pix_out[2] <= gamma_lut(pix_in[2]);
             end
         end
     end

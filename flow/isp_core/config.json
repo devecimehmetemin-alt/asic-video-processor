@@ -1,0 +1,18 @@
+{
+  "DESIGN_NAME": "isp_core",
+  "USE_SYNLIG": true,
+  "SYNTH_NO_FLAT": true,
+  "VERILOG_FILES": [
+    "dir::../../rtl/black_level.sv",
+    "dir::../../rtl/white_balance.sv",
+    "dir::../../rtl/line_buffer.sv",
+    "dir::../../rtl/window_3x3.sv",
+    "dir::../../rtl/debayer.sv",
+    "dir::../../rtl/gamma.sv",
+    "dir::../../rtl/isp_core.sv"
+  ],
+  "CLOCK_PORT": "clk",
+  "CLOCK_PERIOD": 20,
+  "FP_SIZING": "relative",
+  "FP_CORE_UTIL": 40
+}

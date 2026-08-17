@@ -27,3 +27,6 @@ __pycache__/
 *.mem
 *.meta
 model/*.png
+
+# generated LUT paste source (content lives in rtl/gamma.sv)
+model/gamma_lut.txt

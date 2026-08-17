@@ -1,0 +1,8 @@
+{
+  "DESIGN_NAME": "black_level",
+  "VERILOG_FILES": ["dir::../../rtl/black_level.sv"],
+  "CLOCK_PORT": "clk",
+  "CLOCK_PERIOD": 20,
+  "FP_SIZING": "relative",
+  "FP_CORE_UTIL": 40
+}

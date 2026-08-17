@@ -39,11 +39,9 @@ always @(posedge clk) begin
 end
 
 task send_pixel(input logic [7:0] p);
-    @(negedge clk);
     pix_in = p;
     valid = 1'b1;
     @(negedge clk);
-    valid = 1'b0;
 endtask
 
 task send_frame;
@@ -51,6 +49,7 @@ task send_frame;
     @(negedge clk);
     frame_start = 1'b0;
     for (int i = 0; i < N_IN; i++) send_pixel(frame_in[i]);
+    valid = 1'b0;
 endtask
 
 task automatic check_frame(input int base, input string name);
