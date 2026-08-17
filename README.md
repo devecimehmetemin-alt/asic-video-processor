@@ -16,11 +16,9 @@ Bayer raw -> black level -> white balance -> 3x3 window -> debayer -> gamma
 
 The colour detector and box overlay are left out. The spine is what exercises
 the interesting parts of the flow: two line buffers of real storage, an adder
-tree, and a 256-entry lookup table that has to become logic rather than a
-preloaded memory.
+tree, and a 256-entry lookup table.
 
 Frames are 64x64, small enough to route and simulate at gate level in minutes.
-The line buffers still dominate: 1024 of the 1183 flip-flops are pixel storage.
 
 ## Toolchain
 
@@ -53,10 +51,9 @@ DRC errors              0  (routing, Magic, KLayout)
 LVS errors              0
 ```
 
-Sweeping the clock constraint downward puts the critical path at roughly
-9.5 ns at the slow corner, so about 105 MHz before pipelining. The path runs
-through the debayer's adder tree into the gamma lookup. Splitting that with a
-register stage is the next move if the frequency ever needs to go up.
+Sweeping the clock constraint downward puts the critical path at 9.5 ns at the
+slow corner, so 105 MHz before pipelining. Splitting that path with a register
+stage is the next move if the frequency ever needs to go up.
 
 `flow/isp_core/results.json` holds these figures as the flow emits them.
 
@@ -100,16 +97,38 @@ model/  Python reference model and golden frames
 flow/   OpenLane configuration, run script, results
 ```
 
-## Porting notes
+## Compared with the FPGA build
 
-The RTL is the FPGA design with three changes the ASIC synthesis front end
-forced.
+The two builds are not directly comparable. The FPGA build is the full 640-wide
+design including colour detection and the UART front end, using 618 LUTs, 406
+registers and one block RAM. This is the 64-wide spine alone, using 1183
+flip-flops and 0.16 mm^2 of standard cells.
 
-RGB moves between stages as a packed `[23:0]` bus instead of an unpacked array
-of three bytes. The gamma table is a case statement rather than an initialised
-array, because an FPGA loads memory contents from the bitstream at
-configuration and an ASIC has no equivalent, so a table that needs a power-up
-value has to be logic. The white balance gain is written without a function
-return, which the synthesis frontend would not read.
+**Storage.** On the Artix-7 the two line buffers are inferred into a single
+block RAM. sky130 provides no equivalent hard block, so the same 1024 bits are
+implemented as 1024 flip-flops, which is 87% of the sequential cells in the
+design. At 640 pixels per line this would not be practical and an SRAM macro
+would be required instead.
 
+**Gamma table.** The FPGA loads memory contents from the bitstream during
+configuration, so a 256-entry initialised array costs almost no logic. An ASIC
+has no configuration step, so the table is implemented as combinational logic.
+
+**Clock frequency.** The FPGA design runs at 25 MHz because VGA requires a
+25 MHz pixel clock, not because of any timing limit. Built out of context on
+the Artix-7, the same isp_core reaches 183 MHz against 105 MHz here, and the
+critical path sits in the same place on both: the window registers through the
+debayer into the gamma lookup. The gap is process rather than architecture:
+the Artix-7 is fabricated on 28 nm and sky130 on 130 nm, a considerably older
+and slower technology. This is the main reason the ASIC build runs at the
+lower frequency.
+
+**Toolchain differences.** Three constructs needed rewriting for the ASIC front
+end: RGB as a packed `[23:0]` bus rather than an unpacked array of three bytes,
+the gamma table as a case statement, and the white balance gain written without
+a function return. The first two were accepted by Vivado without warning and
+mis-elaborated here, producing a design that passed DRC, LVS and timing closure
+while computing incorrect pixel values. Only comparison against the Python
+reference model caught it, which is why the gate-level check is part of the
+flow rather than an optional step.
 
