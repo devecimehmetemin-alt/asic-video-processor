@@ -30,18 +30,8 @@ def colorize_mosaic(raw):
 
 
 if __name__ == "__main__":
-    img = Image.open(HERE / "images.jpeg").convert("RGB")
-    arr = np.array(img)  # shape: (H, W, 3) for RGB
-
-    row = img.size[1]
-    col = img.size[0]
-    assert row % 2 == 0 and col % 2 == 0, f"need even dims, got {row}x{col}"
-
-    # real image
-    raw = mosaic_rggb(arr)
-    Image.fromarray(colorize_mosaic(raw)).save(HERE / "output_color.png")
-
     # solid-red pass/fail test: every pixel pure red
+    row = col = 64
     red = np.zeros((row, col, 3), dtype=np.uint8)
     red[:, :, 0] = 255
     red_raw = mosaic_rggb(red)
