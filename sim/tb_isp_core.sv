@@ -24,10 +24,17 @@ logic [7:0] rx [0:2*N_OUT-1];
 int rx_n = 0;
 int errors = 0;
 
+`ifdef GL
+isp_core dut (
+    .clk, .reset, .valid, .frame_start,
+    .pix_in, .pix_out, .valid_out
+);
+`else
 isp_core #(.img_width(W), .img_height(H)) dut (
     .clk, .reset, .valid, .frame_start,
     .pix_in, .pix_out, .valid_out
 );
+`endif
 
 always @(posedge clk) begin
     if (valid_out && rx_n + 2 < 2*N_OUT) begin
@@ -91,6 +98,8 @@ initial begin
 
     check_frame(0, "frame 1");
     check_frame(N_OUT, "frame 2");
+
+    $writememh("rx_out.mem", rx);
 
     if (errors == 0) $display("PASS: both frames match");
     else $display("FAIL: %0d total mismatches", errors);

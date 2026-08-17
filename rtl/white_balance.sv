@@ -27,12 +27,12 @@ module white_balance #(
         input logic [7:0] pix,
         input logic [9:0] gain
     );
-        logic [7:0] result;
-        logic [17:0] multiplication = pix * gain;
-        logic [9:0] i_result = multiplication >> 8; //product truncated
+        logic [17:0] multiplication;
+        logic [9:0] i_result;
 
-        result = (i_result > 255) ? 8'd255 : (i_result) ; // saturate at 255
-        return result;
+        multiplication = pix * gain;
+        i_result = multiplication >> 8; //product truncated
+        apply_gain = (i_result > 255) ? 8'd255 : i_result; // saturate at 255
     endfunction
 
     always_ff @(posedge clk) begin
