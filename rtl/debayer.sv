@@ -8,7 +8,7 @@ module debayer #(
     input logic [7:0] w11, w12, w13, // row 1
     input logic [7:0] w21, w22, w23, // row 2
     input logic [7:0] w31,w32, w33, // row 3
-    output logic [7:0] pix_out [2:0], 
+    output logic [23:0] pix_out, 
     output logic valid_out
 );
 
@@ -56,24 +56,24 @@ end
 always_comb begin
         case (channel)
             ch_red:begin
-                pix_out[0] = w22;
-                pix_out[1] = (10'(w12) + w21 + w23 + w32) >> 2;
-                pix_out[2] = (10'(w11) + w13 + w31 + w33) >> 2;
+                pix_out[23:16] = w22;
+                pix_out[15:8] = (10'(w12) + w21 + w23 + w32) >> 2;
+                pix_out[7:0] = (10'(w11) + w13 + w31 + w33) >> 2;
             end
             ch_blue: begin
-                pix_out[0] = (10'(w11) + w13 + w31 + w33) >> 2;
-                pix_out[1] = (10'(w12) + w21 + w23 + w32) >> 2;
-                pix_out[2] =  w22;
+                pix_out[23:16] = (10'(w11) + w13 + w31 + w33) >> 2;
+                pix_out[15:8] = (10'(w12) + w21 + w23 + w32) >> 2;
+                pix_out[7:0] =  w22;
             end
             ch_green_red_row: begin
-                pix_out[0] = (9'(w21) + w23) >> 1;
-                pix_out[1] = w22;
-                pix_out[2] = (9'(w12) + w32) >> 1;
+                pix_out[23:16] = (9'(w21) + w23) >> 1;
+                pix_out[15:8] = w22;
+                pix_out[7:0] = (9'(w12) + w32) >> 1;
             end
             default: begin // ch_green_blue_row
-                pix_out[0] = (9'(w12) + w32) >> 1;
-                pix_out[1] = w22;
-                pix_out[2] = (9'(w21) + w23) >> 1;
+                pix_out[23:16] = (9'(w12) + w32) >> 1;
+                pix_out[15:8] = w22;
+                pix_out[7:0] = (9'(w21) + w23) >> 1;
             end
         endcase
     end

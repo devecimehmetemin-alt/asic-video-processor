@@ -14,9 +14,9 @@ logic [7:0] wb_pix;
 logic wb_valid;
 logic [7:0] w11, w12, w13, w21, w22, w23, w31, w32, w33;
 logic win_valid;
-logic [7:0] deb_pix [2:0];
+logic [23:0] deb_pix;
 logic deb_valid;
-logic [7:0] g_pix [2:0];
+logic [23:0] g_pix;
 logic fs_d1, fs_d2;
 
 always_ff @(posedge clk) begin
@@ -70,6 +70,6 @@ gamma u_gamma (
     .valid_out(valid_out)
 );
 
-assign pix_out = {g_pix[0], g_pix[1], g_pix[2]};
+assign pix_out = g_pix;
 
 endmodule

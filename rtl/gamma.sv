@@ -2,9 +2,9 @@ module gamma (
     input  logic clk,
     input  logic reset,
     input  logic valid,
-    input  logic [7:0] pix_in [2:0],
+    input  logic [23:0] pix_in,
     output logic valid_out,
-    output logic [7:0] pix_out [2:0]
+    output logic [23:0] pix_out
 );
 
     // Gamma correction Look-Up Table
@@ -277,16 +277,16 @@ module gamma (
     always_ff @(posedge clk) begin
         if (reset) begin
             valid_out <= 1'b0;
-            pix_out[0]     <= 8'd0;
-            pix_out[1]     <= 8'd0;
-            pix_out[2]     <= 8'd0;
+            pix_out <= 24'd0;
+            
+            
         end 
         else begin
             valid_out <= valid;
             if (valid) begin
-                pix_out[0] <= gamma_lut(pix_in[0]);
-                pix_out[1] <= gamma_lut(pix_in[1]);
-                pix_out[2] <= gamma_lut(pix_in[2]);
+                pix_out[23:16] <= gamma_lut(pix_in[23:16]);
+                pix_out[15:8] <= gamma_lut(pix_in[15:8]);
+                pix_out[7:0] <= gamma_lut(pix_in[7:0]);
             end
         end
     end
