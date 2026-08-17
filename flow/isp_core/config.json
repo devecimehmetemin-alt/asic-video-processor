@@ -1,6 +1,6 @@
 {
   "DESIGN_NAME": "isp_core",
-  "USE_SYNLIG": true,
+  "USE_SYNLIG": false,
   "SYNTH_NO_FLAT": true,
   "VERILOG_FILES": [
     "dir::../../rtl/black_level.sv",
